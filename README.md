@@ -18,32 +18,40 @@ Simple CRUD data staff using laravel 10 and more.
 ## Preparation
     1. Clone this repository to local directory
     2. You must update your vendor using composer
+
         ```sh 
             composer update
         ```
+
     3. After update your vendor, you must generate key for the application using artisan command
-        ```sh 
+
+        ```sh
             php artisan key:generate
         ```
     4. Next, you must create a database and table or simply you can create it using artisan command too
-        ```sh 
+
+        ```sh
             php artisan migrate
         ```
     5. After migrating the database and tables, you can insert a data or you can seed it using artisan command
-        ```sh 
+
+        ```sh
             php artisan db:seed
         ```
     6. Make sure you have [Node Js](https://nodejs.org/en/download/prebuilt-installer) on your PC
     7. You should install npm inside the project
-        ```sh 
+
+        ```sh
             npm install
         ```
     8. After installation, build the component using npm
-        ```sh 
+
+        ```sh
             npm run build
         ```
     9. Last, you can run the project via artisan
-        ```sh 
+
+        ```sh
             php artisan serve
         ```
     10. I already created default account inside the application, so you can login by just visiting login page and use these credential : 
