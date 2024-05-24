@@ -10,8 +10,9 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdn.datatables.net/2.0.7/css/dataTables.dataTables.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -35,8 +36,80 @@
             </main>
         </div>
         <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
         <script src="https://cdn.datatables.net/2.0.7/js/dataTables.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         @stack('scripts')
+
+        {{-- ALERT SUCCES/ERROR --}}
+        <script>
+            @if ($errors->any())
+            @foreach ($errors->all() as $error)
+                toastr.error('{{ $error }}')
+            @endforeach
+            @endif
+        </script>
+
+        {{-- DYNAMIC DELETE ALERT --}}
+        <script>
+            $(document).ready(function(){
+
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+
+
+                $('body').on('click', '.delete-item', function(event){
+                    event.preventDefault();
+
+                    let deleteUrl = $(this).attr('href');
+
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You won't be able to revert this!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, delete it!'
+                        }).then((result) => {
+                        if (result.isConfirmed) {
+
+                            $.ajax({
+                                type: 'DELETE',
+                                url: deleteUrl,
+
+                                success: function(data){
+
+                                    if(data.status == 'success'){
+                                        Swal.fire(
+                                            'Deleted!',
+                                            data.message,
+                                            'success'
+                                        )
+                                        // window.location.reload();
+                                        $('.table').DataTable().draw();
+                                    }else if (data.status == 'error'){
+                                        Swal.fire(
+                                            'Cant Delete',
+                                            data.message,
+                                            'error'
+                                        )
+                                    }
+                                },
+                                error: function(xhr, status, error){
+                                    console.log(error);
+                                }
+                            })
+                        }
+                    })
+                })
+
+            })
+        </script>
+
     </body>
 </html>

@@ -15,14 +15,21 @@ class PasswordController extends Controller
      */
     public function update(Request $request): RedirectResponse
     {
-        $validated = $request->validateWithBag('updatePassword', [
-            'current_password' => ['required', 'current_password'],
-            'password' => ['required', Password::defaults(), 'confirmed'],
+        $request->validate([
+            'current_password' => 'required | current_password',
+            'password' => 'required | confirmed'
         ]);
 
+        if($request->password == $request->current_password){
+            toastr()->error('The New Password Cannot Be The Same As The Old Password!');
+            return back()->with('status', 'errors');
+        }
+
         $request->user()->update([
-            'password' => Hash::make($validated['password']),
+            'password' => Hash::make($request->password),
         ]);
+
+        toastr()->success('Password Has Been Changed!');
 
         return back()->with('status', 'password-updated');
     }
