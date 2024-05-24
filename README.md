@@ -19,7 +19,7 @@ Simple CRUD data staff using laravel 10 and more.
     1. Clone this repository to local directory
     2. You must update your vendor using composer
 
-        ```sh 
+        ```sh
             composer update
         ```
 
